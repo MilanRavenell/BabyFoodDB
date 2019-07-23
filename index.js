@@ -7,33 +7,33 @@ app.use(express.json());
 
 // config for your database
 var config = {
-    user: 'sa',
-    password: 'mypassword',
-    server: 'localhost', 
-    database: 'SchoolDB' 
+    user: 'babyfoodadmin',
+    password: 'babyfoodpass69!',
+    server: 'tcp:babyfood.database.windows.net',
+    connectionTimeout: '30000', 
+    database: 'BabyFoodDB' 
 };
 
 app.get('/', function (req, res) {
     // connect to your database
     var ac = req.param('acronym');
-    res.send(user);
-    // sql.connect(config, function (err) {
+    sql.connect(config, function (err) {
     
-    //     if (err) console.log(err);
+         if (err) console.log(err);
 
-    //     // create Request object
-    //     var request = new sql.Request();
+         // create Request object
+         var request = new sql.Request();
            
-    //     // query to the database and get the records
-    //     request.query('select * from Student', function (err, recordset) {
+         // query to the database and get the records
+         request.query('select * from acronyms', function (err, recordset) {
             
-    //         if (err) console.log(err)
+             if (err) console.log(err)
 
-    //         // send records as a response
-    //         res.send(recordset);
+             // send records as a response
+             res.send(recordset);
             
-    //     });
-    // });
+         });
+     });
 });
 
 app.listen(port, () => console.log('Server is running..'));
