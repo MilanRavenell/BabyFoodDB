@@ -1,11 +1,37 @@
-const http = require('http');
+var express = require('express');
+var app = express();
+var sql = require("mssql");
 
-const server = http.createServer((request, response) => {
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end("FUCK!");
+// config for your database
+var config = {
+    user: 'sa',
+    password: 'mypassword',
+    server: 'localhost', 
+    database: 'SchoolDB' 
+};
+
+app.get('/', function (req, res) {
+    // connect to your database
+    res.send("FUCK!");
+    // sql.connect(config, function (err) {
+    
+    //     if (err) console.log(err);
+
+    //     // create Request object
+    //     var request = new sql.Request();
+           
+    //     // query to the database and get the records
+    //     request.query('select * from Student', function (err, recordset) {
+            
+    //         if (err) console.log(err)
+
+    //         // send records as a response
+    //         res.send(recordset);
+            
+    //     });
+    // });
 });
 
-const port = process.env.PORT || 1337;
-server.listen(port);
-
-console.log("Server running at http://localhost:%d", port);
+var server = app.listen(5000, function () {
+    console.log('Server is running..');
+});
