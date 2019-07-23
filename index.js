@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 var sql = require("mssql");
+const port = process.env.PORT;
+
+app.use(express.json());
 
 // config for your database
 var config = {
@@ -12,7 +15,8 @@ var config = {
 
 app.get('/', function (req, res) {
     // connect to your database
-    res.send("FUCK!");
+    var ac = req.param('acronym');
+    res.send(user);
     // sql.connect(config, function (err) {
     
     //     if (err) console.log(err);
@@ -32,6 +36,4 @@ app.get('/', function (req, res) {
     // });
 });
 
-var server = app.listen(5000, function () {
-    console.log('Server is running..');
-});
+app.listen(port, () => console.log('Server is running..'));
