@@ -2,28 +2,33 @@
 // Licensed under the MIT License.
 
 const { ActivityHandler } = require('botbuilder');
+    var request = require('request');
 
-class MyBot extends ActivityHandler {
+
+
+class babyBot extends ActivityHandler {
     constructor() {
         super();
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
-            await context.sendActivity(`You said '${ context.activity.text }'`);
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
-        });
 
-        this.onMembersAdded(async (context, next) => {
-            const membersAdded = context.activity.membersAdded;
-            for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
-                if (membersAdded[cnt].id !== context.activity.recipient.id) {
-                    await context.sendActivity('Hello and welcome!');
-                }
+            if (context.activity.text == "hi") {
+                await context.sendActivity(`You said '${context.activity.text}'`);
+
+                request.post(
+                    {
+                        url: 'http://www.babyfooddb.azurewebsites.net/',
+                        form: { "acronym": context.activity.text }
+                    }
+                );
+
+                await next();
+
             }
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
         });
     }
+
+    // azurewebsites.net/?acronym=x
 }
 
-module.exports.MyBot = MyBot;
+module.exports.babyBot = babyBot;
