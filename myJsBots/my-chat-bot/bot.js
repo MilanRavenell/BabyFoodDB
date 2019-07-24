@@ -2,60 +2,40 @@
 // Licensed under the MIT License.
 
 const { ActivityHandler } = require('botbuilder');
-const request = require('request');
 const rp = require('request-promise');
 
 class BabyBot extends ActivityHandler {
     constructor() {
         super();
-        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
+
         this.onMessage(async (context, next) => {
             // format is "what does xxx mean?"
             if (context.activity.text.includes("what does") &&
                 context.activity.text.includes("mean?") &&
                 context.activity.text.split(" ").length == 4) {
 
-                await context.sendActivity(`You want '${context.activity.text.split(" ")[2]}' defined`);
+                var word = context.activity.text.split(" ")[2];
+                await context.sendActivity(`You want '${word}' defined`);
                 await context.sendActivity(`bitch`);
 
-                console.log('fuck');
-
-                // request.post({
-                //     headers: {"a" : "b"},
-                //     url: 'https://babyfoodapp.azurewebsites.net/',
-                //     json: { acronym: `${context.activity.text.split(" ")[2]}` },
-                //     async function(error, response, body) {
-                //         context.sendActivity("hi");
-
-                //         if (!error && response.statusCode == 200) {
-                //             //console.log(body);
-                //             await context.sendActivity(`It means '${body}'`);
-                //         }
-                //         console.log('fuuuuck');
-                //     }
-                // });
-                context.sendActivity("running   ");
                 const options = {
-                   method: 'POST',
-                   uri: 'https://babyfoodapp.azurewebsites.net/',
-                   body: {
-                       foo: 'bar'
-                   },
-                   json: true
-                // JSON stringifies the body automatically
+                    method: 'POST',
+                    uri: 'https://babyfoodapp.azurewebsites.net/',
+                    body: { acronym: `${ context.activity.text.split(" ")[2] }` },
+                    json: true,
+                    rejectUnauthorized: false,
+                    requestCert: false,
+                    agent: false
                 };
 
-                rp(options)
-                   .then(async function (response) {
-                       // Handle the response
-                       await context.sendActivity("success");
-                       //console.log('fuuuuuuck');
-                   })
-                   .catch(async function (err) {
-                       // Deal with the error
-                       await context.sendActivity("success2");
-                       console.log('fuuuuuuuuuuuucckk');
-                   });
+                await rp(options)
+                    .then(async function (response) {
+                        await context.sendActivity(`${ response[0]["description"] }`);
+                        console.log(JSON.stringify(response));
+                    })
+                    .catch(async function (err) {
+                        await context.sendActivity("error");
+                    });
             }
 
             await next();
