@@ -22,7 +22,7 @@ app.post('/retrieve', function (req, res) {
     var ac = req.body.acronym;
 
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`SELECT * FROM acronyms WHERE acronym='${ac}';`)
+        return pool.request().query(`SELECT * FROM Acronyms WHERE Acronym='${ac}';`)
         }).then(result => {
             let rows = result.recordset
             res.setHeader('Access-Control-Allow-Origin', '*')
@@ -41,7 +41,7 @@ app.post('/add', function (req, res) {
     var desc = req.body.description;
 
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`INSERT INTO acronyms (acronym, description) VALUES ('${ac}', '${desc}');`)
+        return pool.request().query(`INSERT INTO Acronyms (Acronym, Description) VALUES ('${ac}', '${desc}');`)
         }).then(result => {
             res.setHeader('Access-Control-Allow-Origin', '*')
             res.status(200).send('Success');
