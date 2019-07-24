@@ -30,7 +30,7 @@ class BabyBot extends ActivityHandler {
                         acronym: `${ acronym }`, 
                         description: `${description}`,
                         team: `${team}`,
-                        alias: `${alias}` 
+                        alias: `${alias}`
                     },
                     json: true,
                     rejectUnauthorized: false,
