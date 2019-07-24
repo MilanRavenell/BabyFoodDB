@@ -66,11 +66,15 @@ app.post('/update', function (req, res) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.request().query(`SELECT *, ROW_NUMBER() OVER (ORDER BY id DESC) AS rownum FROM Acronyms WHERE Acronym='${ac}' HAVING rownum = ${index};`)
     }).then(result => {
-        id = result.recordset[0]["id"]
+        id = result.recordset[0]["id"];
+        sql.close();
+    }).catch(err => {
+        res.status(500).send(err);
+        sql.close();
     });
 
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`UPDATE Acronyms SET (Acronym, Description) VALUES ('${ac}', '${desc}') WHERE id = ${id} ; `)
+        return pool.request().query(`UPDATE Acronyms SET Acronym='${ac}', Description='${desc}' WHERE id = ${id} ; `)
     }).then(result => {
         res.setHeader('Access-Control-Allow-Origin', '*')
         res.status(200).send('Success');
@@ -81,4 +85,4 @@ app.post('/update', function (req, res) {
     });
 });
 
-app.listen(port, () => console.log('Server is running..'));
+app.listen(port, () => console.log('Server is running....'));
