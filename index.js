@@ -30,17 +30,17 @@ app.get('/', function (req, res) {
 
     conn.connect().then(function () {
 	    var req = new sql.Request(conn);
-	    req.query("SELECT * FROM acronym").then(function (recordset) {
+	    req.query("SELECT * FROM acronyms").then(function (recordset) {
 	        res.send(recordset);
 	        conn.close();
 	    })
 	    .catch(function (err) {
-	        console.log(err);
+	        res.send('hi');
 	        conn.close();
 	    });
 	})
     .catch(function (err) {
-        console.log(err);
+        res.send(err.number);
     });
 
     // sql.connect(config, function (err) {
