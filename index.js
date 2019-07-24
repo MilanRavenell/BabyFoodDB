@@ -39,10 +39,12 @@ app.post('/retrieve', function (req, res) {
 app.post('/add', function (req, res) {
     // connect to your database
     var ac = req.body.acronym;
+    var alias = req.body.alias;
+    var team = req.body.team;
     var desc = req.body.description;
 
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`INSERT INTO Acronyms (Acronym, Description) VALUES ('${ac}', '${desc}');`)
+        return pool.request().query(`INSERT INTO Acronyms (Acronym, Description, alias, team, last_updated) VALUES ('${ac}', '${desc}', '${alias}', '${team}', CURRENT_TIMESTAMP);`)
         }).then(result => {
             res.setHeader('Access-Control-Allow-Origin', '*')
             res.status(200).send('Success');

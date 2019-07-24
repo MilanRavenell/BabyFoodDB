@@ -46,6 +46,7 @@ class BabyBot extends ActivityHandler {
                             }
                         }
                         console.log(response);
+                        console.log(`name: ${context.activity.from.name}`);
                     })
                     .catch(async function (err) {
                         console.log(err);
@@ -55,7 +56,7 @@ class BabyBot extends ActivityHandler {
             // format: "<word> means <def>"
             } else if (message.length > 3 && message[1] == "means") {
                 var word = message[0];
-                var description = message.slice(2, message.length);
+                var description = message.slice(2, message.length).join(' ');
 
                 const options = {
                     method: 'POST',
@@ -71,6 +72,7 @@ class BabyBot extends ActivityHandler {
                     .then(async function (response) {
                         await context.sendActivity(`${word} has been added. Thanks!`);
                         console.log(response);
+                        console.log(`name: ${context.activity.name}`);
                     })
                     .catch(async function (err) {
                         console.log(err);
@@ -116,7 +118,6 @@ class BabyBot extends ActivityHandler {
             }
 
             await next();
-
         });
     }
 
