@@ -2,33 +2,62 @@
 // Licensed under the MIT License.
 
 const { ActivityHandler } = require('botbuilder');
-    var request = require('request');
+const request = require('request');
+//const request = require('request-promise');
 
-
-
-class babyBot extends ActivityHandler {
+class BabyBot extends ActivityHandler {
     constructor() {
         super();
         // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
+            // format is "what does xxx mean?"
+            if (context.activity.text.includes("what does") &&
+                context.activity.text.includes("mean?") &&
+                context.activity.text.split(" ").length == 4) {
 
-            if (context.activity.text == "hi") {
-                await context.sendActivity(`You said '${context.activity.text}'`);
+                await context.sendActivity(`You want '${context.activity.text.split(" ")[2]}' defined`);
+                await context.sendActivity(`bitch`);
 
-                request.post(
-                    {
-                        url: 'http://www.babyfooddb.azurewebsites.net/',
-                        form: { "acronym": context.activity.text }
+                request.post({
+                    headers: {"a" : "b"},
+                    url: 'https://babyfoodapp.azurewebsites.net/',
+                    json: { acronym: `${context.activity.text.split(" ")[2]}` },
+                    async function(error, response, body) {
+                        await context.sendActivity("hi");
+
+                        if (!error && response.statusCode == 200) {
+                            //console.log(body);
+                            await context.sendActivity(`It means '${body}'`);
+                        }
                     }
-                );
+                });
+                //context.sendActivity("running   ");
+                //const options = {
+                //    method: 'POST',
+                //    uri: 'https://babyfoodapp.azurewebsites.net/',
+                //    body: {
+                //        foo: 'bar'
+                //    },
+                //    json: true
+                //    // JSON stringifies the body automatically
+                //};
 
-                await next();
-
+                //request(options)
+                //    .then(function (response) {
+                //        // Handle the response
+                //        context.sendActivity("success");
+                //    })
+                //    .catch(function (err) {
+                //        // Deal with the error
+                //        context.sendActivity("success2");
+                //    });
             }
+
+            await next();
+
         });
     }
 
-    // azurewebsites.net/?acronym=x
 }
 
-module.exports.babyBot = babyBot;
+module.exports.BabyBot = BabyBot;
