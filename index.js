@@ -7,11 +7,13 @@ app.use(express.json());
 
 //config for your database
 var config = {
-    user: 'babyfoodadmin',
+    user: 'babyfoodadmin@babyfood',
     password: 'babyfoodpass69!',
     server: 'babyfood.database.windows.net',
-    connectionTimeout: '30000',
-    database: 'BabyFoodDB' 
+    connectionTimeout: 30000,
+    database: 'BabyFoodDB',
+    port: 1433,
+    options: { encrypt: true } 
 };
 
 app.get('/', function (req, res) {
@@ -26,7 +28,7 @@ app.get('/', function (req, res) {
   			res.status(200).json(rows);
     		sql.close();
   		}).catch(err => {
-    		res.status(500).send({ message: "${err}""})
+    		res.status(500).send(err)
     		sql.close();
   	});
 
