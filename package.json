@@ -9,6 +9,8 @@
         "start": "node index.js"
     },
     "dependencies": {
+        "express": "^4.17.1",
+        "mssql": "^5.1.0",
         "request": "^2.88.0"
     }
 }
