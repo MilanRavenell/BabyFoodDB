@@ -9,7 +9,7 @@ app.use(express.json());
 var config = {
     user: 'babyfoodadmin',
     password: 'babyfoodpass69!',
-    server: 'tcp:babyfood.database.windows.net',
+    server: 'babyfood.database.windows.net',
     connectionTimeout: '30000',
     database: 'BabyFoodDB' 
 };
