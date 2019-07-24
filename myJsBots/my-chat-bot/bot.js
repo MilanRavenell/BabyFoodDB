@@ -10,18 +10,20 @@ class BabyBot extends ActivityHandler {
 
         this.onMessage(async (context, next) => {
             // format is "what does xxx mean?"
-            if (context.activity.text.includes("what does") &&
-                context.activity.text.includes("mean?") &&
-                context.activity.text.split(" ").length == 4) {
+            var message = context.activity.text.split(" ");
+            console.log(message);
+            if (message.length == 4 &&
+                message[0] == "what" &&
+                message[1] == "does" &&
+                message[3] == "mean?")
+            {
 
-                var word = context.activity.text.split(" ")[2];
-                await context.sendActivity(`You want '${word}' defined`);
-                await context.sendActivity(`bitch`);
+                var word = message[2];
 
                 const options = {
                     method: 'POST',
-                    uri: 'https://babyfoodapp.azurewebsites.net/',
-                    body: { acronym: `${ context.activity.text.split(" ")[2] }` },
+                    uri: 'https://babyfoodapp.azurewebsites.net/retrieve',
+                    body: { acronym: `${ word }` },
                     json: true,
                     rejectUnauthorized: false,
                     requestCert: false,
@@ -30,11 +32,40 @@ class BabyBot extends ActivityHandler {
 
                 await rp(options)
                     .then(async function (response) {
-                        await context.sendActivity(`${ response[0]["description"] }`);
-                        console.log(JSON.stringify(response));
+                        if (response.length == 0) {
+                            await context.sendActivity(`Sorry, ${word} hasn't been added yet. You can add a description with:\n\n \"${word} means <description>\"`);
+                        }
+                        else {
+                            for (var i = 0; i < response.length; i++) {
+                                await context.sendActivity(`${ response[i]["Description"] }`);
+                            }
+                        }  
+                        console.log(response);
                     })
                     .catch(async function (err) {
-                        await context.sendActivity("error");
+                        console.log(err);
+                    });
+            } else if (message.length > 2 && message[1] == "means") {
+                var word = message[0];
+                var description = message.slice(2, message.length);
+
+                const options = {
+                    method: 'POST',
+                    uri: 'https://babyfoodapp.azurewebsites.net/add',
+                    body: { acronym: `${ word }`, description: `${description}` },
+                    json: true,
+                    rejectUnauthorized: false,
+                    requestCert: false,
+                    agent: false
+                };
+
+                await rp(options)
+                    .then(async function (response) {
+                        await context.sendActivity(`${word} has been added. Thanks!`);
+                        console.log(response);
+                    })
+                    .catch(async function (err) {
+                        console.log(err);
                     });
             }
 
