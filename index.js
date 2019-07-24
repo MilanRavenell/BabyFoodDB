@@ -5,43 +5,30 @@ const port = process.env.PORT;
 
 app.use(express.json());
 
-const pool = new sql.ConnectionPool({
+//config for your database
+var config = {
     user: 'babyfoodadmin',
     password: 'babyfoodpass69!',
     server: 'tcp:babyfood.database.windows.net',
     connectionTimeout: '30000',
     database: 'BabyFoodDB' 
-});
-
-var conn = pool;
-
-// config for your database
-// var config = {
-//     user: 'babyfoodadmin',
-//     password: 'babyfoodpass69!',
-//     server: 'tcp:babyfood.database.windows.net',
-//     connectionTimeout: '30000',
-//     database: 'BabyFoodDB' 
-// };
+};
 
 app.get('/', function (req, res) {
     // connect to your database
     var ac = req.param('acronym');
 
-    conn.connect().then(function () {
-	    var req = new sql.Request(conn);
-	    req.query("SELECT * FROM acronyms").then(function (recordset) {
-	        res.send(recordset);
-	        conn.close();
-	    })
-	    .catch(function (err) {
-	        res.send('hi');
-	        conn.close();
-	    });
-	})
-    .catch(function (err) {
-        res.send(err.number);
-    });
+    new sql.ConnectionPool(config).connect().then(pool => {
+ 		return pool.request().query("SELECT * FROM acronyms")
+  		}).then(result => {
+    		let rows = result.recordset
+    		res.setHeader('Access-Control-Allow-Origin', '*')
+  			res.status(200).json(rows);
+    		sql.close();
+  		}).catch(err => {
+    		res.status(500).send({ message: "${err}"})
+    		sql.close();
+  	});
 
     // sql.connect(config, function (err) {
     
