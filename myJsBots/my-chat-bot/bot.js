@@ -3,7 +3,7 @@
 
 const { ActivityHandler } = require('botbuilder');
 const request = require('request');
-//const request = require('request-promise');
+const rp = require('request-promise');
 
 class BabyBot extends ActivityHandler {
     constructor() {
@@ -18,39 +18,44 @@ class BabyBot extends ActivityHandler {
                 await context.sendActivity(`You want '${context.activity.text.split(" ")[2]}' defined`);
                 await context.sendActivity(`bitch`);
 
-                request.post({
-                    headers: {"a" : "b"},
-                    url: 'https://babyfoodapp.azurewebsites.net/',
-                    json: { acronym: `${context.activity.text.split(" ")[2]}` },
-                    async function(error, response, body) {
-                        await context.sendActivity("hi");
+                console.log('fuck');
 
-                        if (!error && response.statusCode == 200) {
-                            //console.log(body);
-                            await context.sendActivity(`It means '${body}'`);
-                        }
-                    }
-                });
-                //context.sendActivity("running   ");
-                //const options = {
-                //    method: 'POST',
-                //    uri: 'https://babyfoodapp.azurewebsites.net/',
-                //    body: {
-                //        foo: 'bar'
-                //    },
-                //    json: true
-                //    // JSON stringifies the body automatically
-                //};
+                // request.post({
+                //     headers: {"a" : "b"},
+                //     url: 'https://babyfoodapp.azurewebsites.net/',
+                //     json: { acronym: `${context.activity.text.split(" ")[2]}` },
+                //     async function(error, response, body) {
+                //         context.sendActivity("hi");
 
-                //request(options)
-                //    .then(function (response) {
-                //        // Handle the response
-                //        context.sendActivity("success");
-                //    })
-                //    .catch(function (err) {
-                //        // Deal with the error
-                //        context.sendActivity("success2");
-                //    });
+                //         if (!error && response.statusCode == 200) {
+                //             //console.log(body);
+                //             await context.sendActivity(`It means '${body}'`);
+                //         }
+                //         console.log('fuuuuck');
+                //     }
+                // });
+                context.sendActivity("running   ");
+                const options = {
+                   method: 'POST',
+                   uri: 'https://babyfoodapp.azurewebsites.net/',
+                   body: {
+                       foo: 'bar'
+                   },
+                   json: true
+                // JSON stringifies the body automatically
+                };
+
+                rp(options)
+                   .then(async function (response) {
+                       // Handle the response
+                       await context.sendActivity("success");
+                       //console.log('fuuuuuuck');
+                   })
+                   .catch(async function (err) {
+                       // Deal with the error
+                       await context.sendActivity("success2");
+                       console.log('fuuuuuuuuuuuucckk');
+                   });
             }
 
             await next();
