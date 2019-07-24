@@ -22,17 +22,17 @@ app.post('/', function (req, res) {
     var ac = req.body.acronym;
 
     new sql.ConnectionPool(config).connect().then(pool => {
- 		return pool.request().query(`SELECT * FROM acronyms WHERE acronym='${ac}';`)
-  		}).then(result => {
-    		let rows = result.recordset
-    		res.setHeader('Access-Control-Allow-Origin', '*')
-  			res.status(200).json(rows);
+        return pool.request().query(`SELECT * FROM acronyms WHERE acronym='${ac}';`)
+        }).then(result => {
+            let rows = result.recordset
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            res.status(200).json(rows);
                 console.log(rows);
-    		sql.close();
-  		}).catch(err => {
-    		res.status(500).send(err)
-    		sql.close();
-  	});
+            sql.close();
+        }).catch(err => {
+            res.status(500).send(err)
+            sql.close();
+    });
 });
 
 app.listen(port, () => console.log('Server is running..'));
