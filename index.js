@@ -4,6 +4,7 @@ var sql = require("mssql");
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //config for your database
 var config = {
@@ -16,12 +17,12 @@ var config = {
     options: { encrypt: true } 
 };
 
-app.get('/', function (req, res) {
+app.post('/', function (req, res) {
     // connect to your database
-    var ac = req.param('acronym');
+    var ac = req.body.acronym;
 
     new sql.ConnectionPool(config).connect().then(pool => {
- 		return pool.request().query("SELECT * FROM acronyms")
+ 		return pool.request().query("SELECT * FROM acronyms WHERE acronym='${ac}'")
   		}).then(result => {
     		let rows = result.recordset
     		res.setHeader('Access-Control-Allow-Origin', '*')
