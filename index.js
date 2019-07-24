@@ -17,7 +17,7 @@ var config = {
     options: { encrypt: true } 
 };
 
-app.post('/', function (req, res) {
+app.post('/retrieve', function (req, res) {
     // connect to your database
     var ac = req.body.acronym;
 
@@ -34,5 +34,24 @@ app.post('/', function (req, res) {
             sql.close();
     });
 });
+
+app.post('/add', function (req, res) {
+    // connect to your database
+    var ac = req.body.acronym;
+    var desc = req.body.description;
+
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.request().query(`INSERT INTO acronyms (acronym, description) VALUES ('${ac}', '${desc}');`)
+        }).then(result => {
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            res.status(200).send('Success');
+            sql.close();
+        }).catch(err => {
+            res.status(500).send(err)
+            sql.close();
+    });
+});
+
+
 
 app.listen(port, () => console.log('Server is running..'));
