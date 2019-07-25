@@ -120,13 +120,49 @@ class BabyBot extends ActivityHandler {
                 getTeamAddDef = true;
 
                 await context.sendActivity('What team do you want to affiliate with this acronym?');
-                
+            }
+
+            //update word
+            // format: "Update <word> to <def>"
+            else if (message.length > 3 && message[0] == "Update") {
+
+                ////format: "Update <word> <optional #> <>"
+                ////var j = 0; //optional #
+                ////var slicei = 2; //start of slice dependant on #
+                ////// isnumeric
+                ////if (!isNaN(parseFloat(message[2])) && isFinite(message[2])) {
+
+                ////    j = message[2];
+                ////    slicei = 3;
+                ////}
+
+                var word = message[1];
+                var description = message.slice(3, message.length);
+                var index = 1;
+
+                const options = {
+                    method: 'POST',
+                    uri: 'https://babyfoodapp.azurewebsites.net/update',
+                    body: { acronym: `${word}`, description: `${description}` , index: `${index}`},
+                    json: true,
+                    rejectUnauthorized: false,
+                    requestCert: false,
+                    agent: false
+                };
+
+                await rp(options)
+                    .then(async function (response) {
+                        await context.sendActivity(`${word} has been updated. Thanks!`);
+                        console.log(response);
+                    })
+                    .catch(async function (err) {
+                        console.log(err);
+                    });
             }
 
             await next();
         });
     }
-
 }
 
 module.exports.BabyBot = BabyBot;
