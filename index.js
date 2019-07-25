@@ -73,7 +73,24 @@ app.post('/update', function (req, res) {
             }
         }
         id = result.recordset[j]["id"];
-        //res.send(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${id}`)
+        res.send(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${id}`)
+        sql.close();
+    }).catch(err => {
+        res.status(500).send(err);
+        sql.close();
+    });
+
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.request().query(`SELECT *, ROW_NUMBER() OVER (ORDER BY id ASC) AS rownum FROM Acronyms WHERE Acronym='${ac}';`)
+    }).then(result => {
+        var j = 0;
+        for (var i = 0; i < result.recordset.length; i++) {
+            if (result.recordset[i]["rownum"] == index) {
+                j = i;
+            }
+        }
+        id = result.recordset[j]["id"];
+        res.send(`>>>>>>>>penis>>>>>>>>>>>>> ${id}`)
         sql.close();
     }).catch(err => {
         res.status(500).send(err);
@@ -81,16 +98,16 @@ app.post('/update', function (req, res) {
     });
 
 
-    new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`UPDATE Acronyms SET Acronym='${ac}', Description='${desc}' WHERE id = ${id};`)
-    }).then(result => {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        res.status(200).send('Success');
-        sql.close();
-    }).catch(err => {
-        res.status(500).send(err)
-        sql.close();
-    });
+    //new sql.ConnectionPool(config).connect().then(pool => {
+    //    return pool.request().query(`UPDATE Acronyms SET Acronym='${ac}', Description='${desc}' WHERE id = ${id};`)
+    //}).then(result => {
+    //    res.setHeader('Access-Control-Allow-Origin', '*')
+    //    res.status(200).send('Success');
+    //    sql.close();
+    //}).catch(err => {
+    //    res.status(500).send(err)
+    //    sql.close();
+    //});
 });
 
 app.listen(port, () => console.log('Server is running....'));
