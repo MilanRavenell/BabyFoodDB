@@ -64,21 +64,33 @@ app.post('/update', function (req, res) {
     var id;
 
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`SELECT *, ROW_NUMBER() OVER (ORDER BY id DESC) AS rownum FROM Acronyms WHERE Acronym='${ac}' HAVING rownum = ${index};`)
+        return pool.request().query(`SELECT *, ROW_NUMBER() OVER (ORDER BY id DESC) AS rownum FROM Acronyms WHERE Acronym='${ac}';`)
     }).then(result => {
-        id = result.recordset[0]["id"]
-    });
-
-    new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.request().query(`UPDATE Acronyms SET (Acronym, Description) VALUES ('${ac}', '${desc}') WHERE id = ${id} ; `)
-    }).then(result => {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        res.status(200).send('Success');
+        var j = 0;
+        for (var i = 0; i < result.recordset.length; i++) {
+            if (result.recordset[i]["rownum"] == index) {
+                j = i;
+            }
+        }
+        id = result.recordset[j]["id"];
+        res.send(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${id}`)
         sql.close();
     }).catch(err => {
-        res.status(500).send(err)
+        res.status(500).send(err);
         sql.close();
     });
+
+
+    //new sql.ConnectionPool(config).connect().then(pool => {
+    //    return pool.request().query(`UPDATE Acronyms SET Acronym='${ac}', Description='${desc}' WHERE id = ${id};`)
+    //}).then(result => {
+    //    res.setHeader('Access-Control-Allow-Origin', '*')
+    //    res.status(200).send('Success');
+    //    sql.close();
+    //}).catch(err => {
+    //    res.status(500).send(err)
+    //    sql.close();
+    //});
 });
 
-app.listen(port, () => console.log('Server is running..'));
+app.listen(port, () => console.log('Server is running....'));
