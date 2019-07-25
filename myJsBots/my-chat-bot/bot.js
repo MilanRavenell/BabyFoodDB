@@ -68,7 +68,8 @@ class BabyBot extends ActivityHandler {
                 }
             }
 
-            // User is trying to get definition of word
+            // asking for definition
+            // format: "What does <word> mean?
             else if (message.length == 4 &&
                 message[0] == "what" &&
                 message[1] == "does" &&
@@ -112,7 +113,8 @@ class BabyBot extends ActivityHandler {
                     });
             } 
 
-            // User is trying to add definition to aronym
+            // defining the word
+            // format: "<word> means <def>"
             else if (message.length > 2 && message[1] == "means") {
                 acronym = message[0];
                 description = message.slice(2, message.length).join(' ');
