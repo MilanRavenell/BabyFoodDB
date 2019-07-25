@@ -128,7 +128,7 @@ class BabyBot extends ActivityHandler {
             // format: "Update <word> to <def>"
             else if (message.length > 3 && message[0] == "Update") {
 
-                ////format: "Update <word> <optional #> <>"
+                ////format: "Update <word> <o   ptional #> <>"
                 ////var j = 0; //optional #
                 ////var slicei = 2; //start of slice dependant on #
                 ////// isnumeric
