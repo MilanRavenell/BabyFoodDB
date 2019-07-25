@@ -65,7 +65,7 @@ app.post('/update', function (req, res) {
 
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.request().query(`SELECT *, ROW_NUMBER() OVER (ORDER BY id ASC) AS rownum FROM Acronyms WHERE Acronym='${ac}';`)
-    }).then(result => {
+    }).then(async function(result) {
 
         var j = await getIndex(result, index);
         id = await result.recordset[j]['id'];
